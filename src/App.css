@@ -49,11 +49,11 @@
 .folder-name {
   font-weight: 600;
   border-left: 2px solid #444;
-  padding: 0px 4px 4px;
+  padding: 0px 4px 8px;
 }
 
 .file {
-  padding: 0px 10px;
+  padding: 4px 10px 8px;
   cursor: pointer;
   border-left: 4px solid #666;
 }

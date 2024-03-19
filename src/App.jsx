@@ -29,6 +29,7 @@ const defaultFolder = makeFolder("Untitled");
 const defaultState = {
   images: [],
   folders: [defaultFolder],
+  defaultFolderId: defaultFolder.id,
   current: null,
 };
 
@@ -72,7 +73,7 @@ function App() {
             name: file.name,
             original: imageBase64,
             result: base64Result,
-            folderId: defaultFolder.id,
+            folderId: state.defaultFolderId,
           });
           return {
             ...state,
@@ -123,28 +124,6 @@ function App() {
     });
   };
 
-  const sidebarItems = state.folders.map((folder) => {
-    const images = state.images.filter((image) => image.folderId == folder.id).map((image) => {
-      return (
-        <File
-          key={image.id}
-          name={image.name}
-          onClick={() => handleSidebarImageClick(image)}
-          onDragStart={() => setDraggingImageId(image.id)} />
-      )}
-    );
-
-    return (
-      <Folder
-        key={folder.id}
-        name={folder.name}
-        onDrop={(e) => handleFolderDrop(folder)}
-        onDragOver={(e) => e.preventDefault()}>
-        {images}
-      </Folder>
-    );
-  });
-
   return (
     <div className='app'>
       <div className='sidebar'>
@@ -155,7 +134,27 @@ function App() {
           </div>
         </div>
         <div className="sidebar-body">
-          {sidebarItems}
+          {state.folders.map((folder) => {
+            const images = state.images.filter((image) => image.folderId == folder.id).map((image) => {
+              return (
+                <File
+                  key={image.id}
+                  name={image.name}
+                  onClick={() => handleSidebarImageClick(image)}
+                  onDragStart={() => setDraggingImageId(image.id)} />
+              )}
+            );
+
+            return (
+              <Folder
+                key={folder.id}
+                name={folder.name}
+                onDrop={(e) => handleFolderDrop(folder)}
+                onDragOver={(e) => e.preventDefault()}>
+                {images}
+              </Folder>
+            );
+          })}
         </div>
       </div>
       <Preview { ...state.current } />
