@@ -147,9 +147,15 @@ function App() {
   return (
     <div className='app'>
       <div className='sidebar'>
-        <div><UploadButton onChange={handeFileSelected} /></div>
-        {sidebarItems}
-        <button onClick={handleCreateFolder}>Create Folder</button>
+        <div className="sidebar-header">
+          <UploadButton onChange={handeFileSelected} />
+          <div>
+            <button className="button" onClick={handleCreateFolder}>New Folder</button>
+          </div>
+        </div>
+        <div className="sidebar-body">
+          {sidebarItems}
+        </div>
       </div>
       <div className='preview'>
         <div>
