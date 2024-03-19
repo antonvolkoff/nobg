@@ -47,7 +47,8 @@ function App() {
             id: uuidv4(),
             name: file.name,
             original: imageBase64, 
-            result: base64Result
+            result: base64Result,
+            folder: 'Untitled',
           }
           ;
           return { 
@@ -78,16 +79,23 @@ function App() {
     setState((state) => ({ ...state, current: image }));
   }
 
-  const sidebarItems = state.images.map((image) => {
-    return (
-      <div 
-        className='sidebar-item' 
-        key={image.id} 
-        onClick={() => handleSidebarImageClick(image)}>
-        {image.name}
-      </div>
-    )}
-  );
+  const imagesByFolder = Object.groupBy(state.images, ({ folder}) => folder);
+
+  const sidebarItems = Object.keys(imagesByFolder).map((folder) => {
+    return (<div key={folder}>
+      {folder}
+      {imagesByFolder[folder].map((image) => {
+        return (
+          <div 
+            className='sidebar-item' 
+            key={image.id} 
+            onClick={() => handleSidebarImageClick(image)}>
+            {image.name}
+          </div>
+        )}
+      )}
+    </div>)
+  });
 
   return (
     <div className='app'>
