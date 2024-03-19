@@ -159,20 +159,6 @@ function App() {
         </div>
       </div>
       <Preview { ...state.current } />
-      {/* <div className='preview'>
-        <div>
-          <div>Original</div>
-          <div className='preview-item'>
-            {state.current && (<img src={state.current.original} />)}
-          </div>
-        </div>
-        <div>
-          <div>Processed</div>
-          <div className='preview-item'>
-            {state.current && (<img src={state.current.result} />)}
-          </div>
-        </div>
-      </div> */}
     </div>
   )
 }
