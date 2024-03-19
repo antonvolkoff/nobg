@@ -2,9 +2,13 @@ import { useState } from 'react'
 import useLocalStorageState from './hooks/localStorage';
 import './App.css'
 import { API_URL, API_KEY, BASE64_IMAGE_HEADER } from './constants'
-import UploadButton from './components/UploadButton'
+
 import loadImage, { LoadImageResult } from "blueimp-load-image"
 import { v4 as uuidv4 } from 'uuid'
+
+import UploadButton from './components/UploadButton';
+import Folder from './components/Folder';
+import File from './components/File';
 
 /////
 
@@ -14,7 +18,7 @@ const makeImage = ({ name, original, result, folderId }) => {
   return {
     id: uuidv4(),
     name,
-    original, 
+    original,
     result,
     folderId,
   };
@@ -65,12 +69,12 @@ function App() {
         setState((state) => {
           const current = makeImage({
             name: file.name,
-            original: imageBase64, 
+            original: imageBase64,
             result: base64Result,
             folderId: defaultFolder.id,
           });
-          return { 
-            ...state, 
+          return {
+            ...state,
             current: current,
             images: [ ...state.images, current],
           };
@@ -119,21 +123,25 @@ function App() {
   };
 
   const sidebarItems = state.folders.map((folder) => {
-    return (<div key={folder.id} onDrop={(e) => handleFolderDrop(folder)} onDragOver={(e) => e.preventDefault()}>
-      {folder.name}
-      {state.images.filter((image) => image.folderId == folder.id).map((image) => {
-        return (
-          <div 
-            className='sidebar-item' 
-            key={image.id} 
-            onClick={() => handleSidebarImageClick(image)}
-            draggable={true}
-            onDragStart={() => setDraggingImageId(image.id)}>
-            {image.name}
-          </div>
-        )}
+    const images = state.images.filter((image) => image.folderId == folder.id).map((image) => {
+      return (
+        <File
+          key={image.id}
+          name={image.name}
+          onClick={() => handleSidebarImageClick(image)}
+          onDragStart={() => setDraggingImageId(image.id)} />
       )}
-    </div>)
+    );
+
+    return (
+      <Folder
+        key={folder.id}
+        name={folder.name}
+        onDrop={(e) => handleFolderDrop(folder)}
+        onDragOver={(e) => e.preventDefault()}>
+        {images}
+      </Folder>
+    );
   });
 
   return (
