@@ -5,10 +5,28 @@ import UploadButton from './components/UploadButton'
 import loadImage, { LoadImageResult } from "blueimp-load-image"
 import { v4 as uuidv4 } from 'uuid'
 
+/////
+
+const makeFolder = (name) => ({ id: uuidv4(), name });
+
+const makeImage = ({ name, original, result, folderId }) => {
+  return {
+    id: uuidv4(),
+    name,
+    original, 
+    result,
+    folderId,
+  };
+};
+
+const defaultFolder = makeFolder("Untitled");
 const defaultState = {
   images: [],
+  folders: [defaultFolder],
   current: null,
-}
+};
+
+///////
 
 function App() {
   const [state, setState] = useState(defaultState);
@@ -43,14 +61,12 @@ function App() {
         const result = await response.json();
         const base64Result = BASE64_IMAGE_HEADER + result.result_b64;
         setState((state) => {
-          const current = {
-            id: uuidv4(),
+          const current = makeImage({
             name: file.name,
             original: imageBase64, 
             result: base64Result,
-            folder: 'Untitled',
-          }
-          ;
+            folderId: defaultFolder.id,
+          });
           return { 
             ...state, 
             current: current,
@@ -79,12 +95,12 @@ function App() {
     setState((state) => ({ ...state, current: image }));
   }
 
-  const imagesByFolder = Object.groupBy(state.images, ({ folder}) => folder);
+  const imagesByFolder = Object.groupBy(state.images, ({ folderId }) => folderId);
 
-  const sidebarItems = Object.keys(imagesByFolder).map((folder) => {
-    return (<div key={folder}>
-      {folder}
-      {imagesByFolder[folder].map((image) => {
+  const sidebarItems = state.folders.map((folder) => {
+    return (<div key={folder.id}>
+      {folder.name}
+      {imagesByFolder[folder.id] && imagesByFolder[folder.id].map((image) => {
         return (
           <div 
             className='sidebar-item' 
