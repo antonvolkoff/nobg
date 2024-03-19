@@ -3,10 +3,11 @@ import './App.css'
 import { API_URL, API_KEY, BASE64_IMAGE_HEADER } from './constants'
 import UploadButton from './components/UploadButton'
 import loadImage, { LoadImageResult } from "blueimp-load-image"
+import { v4 as uuidv4 } from 'uuid'
 
 const defaultState = {
   images: [],
-  current: { original: null, result: null }
+  current: null,
 }
 
 function App() {
@@ -43,6 +44,7 @@ function App() {
         const base64Result = BASE64_IMAGE_HEADER + result.result_b64;
         setState((state) => {
           const current = {
+            id: uuidv4(),
             name: file.name,
             original: imageBase64, 
             result: base64Result
@@ -69,8 +71,8 @@ function App() {
     }
   }
 
-  const handleSidebarImageClick = (name) => {
-    const image = state.images.find((image) => image.name == name);
+  const handleSidebarImageClick = ({ id }) => {
+    const image = state.images.find((image) => image.id == id);
     if (!image) return;
 
     setState((state) => ({ ...state, current: image }));
@@ -78,7 +80,10 @@ function App() {
 
   const sidebarItems = state.images.map((image) => {
     return (
-      <div className='sidebar-item' key={image.name} onClick={() => handleSidebarImageClick(image.name)}>
+      <div 
+        className='sidebar-item' 
+        key={image.id} 
+        onClick={() => handleSidebarImageClick(image)}>
         {image.name}
       </div>
     )}
@@ -94,13 +99,13 @@ function App() {
         <div>
           <div>Original</div>
           <div className='preview-item'>
-            {state.current.original && (<img src={state.current.original} />)}
+            {state.current && (<img src={state.current.original} />)}
           </div>
         </div>
         <div>
           <div>Processed</div>
           <div className='preview-item'>
-            {state.current.result && (<img src={state.current.result} />)}
+            {state.current && (<img src={state.current.result} />)}
           </div>
         </div>
       </div>
