@@ -1,7 +1,7 @@
 import "./App.css";
 import { API_URL, API_KEY, BASE64_IMAGE_HEADER } from "./constants";
 
-import { useState } from "react";
+import { useState, useReducer } from "react";
 import useLocalStorageState from "./hooks/localStorage";
 import loadImage from "blueimp-load-image";
 import { v4 as uuidv4 } from "uuid";
@@ -38,7 +38,7 @@ const defaultState = {
 // UI
 
 function App() {
-  const [state, setState] = useLocalStorageState('state', defaultState);
+  const [state, setState] = useLocalStorageState("state", defaultState);
   const [draggingImageId, setDraggingImageId] = useState(null);
 
   const uploadImageToServer = (file) => {
@@ -132,8 +132,8 @@ function App() {
   };
 
   return (
-    <div className='app'>
-      <div className='sidebar'>
+    <div className="app">
+      <div className="sidebar">
         <div className="sidebar-header">
           <UploadButton onChange={handeFileSelected} />
           <div>

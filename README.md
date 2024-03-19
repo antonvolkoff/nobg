@@ -17,3 +17,4 @@ npm run dev
 - Improve network state management - right now application does not handle API or network errors
 - Add testing
 - Make UI compatitable with multiple browsers
+- Add event better event handling using `useReducer` or any state management library
