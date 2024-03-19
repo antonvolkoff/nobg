@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import useLocalStorageState from './hooks/localStorage';
 import './App.css'
 import { API_URL, API_KEY, BASE64_IMAGE_HEADER } from './constants'
 import UploadButton from './components/UploadButton'
@@ -29,7 +30,7 @@ const defaultState = {
 ///////
 
 function App() {
-  const [state, setState] = useState(defaultState);
+  const [state, setState] = useLocalStorageState('state', defaultState);
   const [draggingImageId, setDraggingImageId] = useState(null);
 
   const uploadImageToServer = (file) => {
@@ -117,12 +118,10 @@ function App() {
     });
   };
 
-  const imagesByFolder = Object.groupBy(state.images, ({ folderId }) => folderId);
-
   const sidebarItems = state.folders.map((folder) => {
     return (<div key={folder.id} onDrop={(e) => handleFolderDrop(folder)} onDragOver={(e) => e.preventDefault()}>
       {folder.name}
-      {imagesByFolder[folder.id] && imagesByFolder[folder.id].map((image) => {
+      {state.images.filter((image) => image.folderId == folder.id).map((image) => {
         return (
           <div 
             className='sidebar-item' 
