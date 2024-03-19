@@ -142,6 +142,7 @@ function App() {
                 <File
                   key={image.id}
                   name={image.name}
+                  isCurrent={image.id == state.currentId}
                   onClick={() => handleSidebarImageClick(image)}
                   onDragStart={() => setDraggingImageId(image.id)} />
               )}

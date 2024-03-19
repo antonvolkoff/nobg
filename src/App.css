@@ -69,6 +69,10 @@
   border-left: 4px solid #666;
 }
 
+.file.current {
+  background-color: rgba(0, 0, 0, 0.1);
+}
+
 .file:hover {
   border-left: 4px solid #444;
 }
