@@ -30,6 +30,7 @@ const defaultState = {
 
 function App() {
   const [state, setState] = useState(defaultState);
+  const [draggingImageId, setDraggingImageId] = useState(null);
 
   const uploadImageToServer = (file) => {
     loadImage(file, {
@@ -95,17 +96,40 @@ function App() {
     setState((state) => ({ ...state, current: image }));
   }
 
+  const handleCreateFolder = (e) => {
+    setState((state) => {
+      return ({ ...state, folders: [...state.folders, makeFolder("New Folder")] });
+    });
+  };
+
+  const handleFolderDrop = (folder) => {
+    setState((state) => {
+      return ({
+        ...state,
+        images: state.images.map((image) => {
+          if (image.id == draggingImageId) {
+            return { ...image, folderId: folder.id };
+          } else {
+            return image;
+          }
+        })
+      });
+    });
+  };
+
   const imagesByFolder = Object.groupBy(state.images, ({ folderId }) => folderId);
 
   const sidebarItems = state.folders.map((folder) => {
-    return (<div key={folder.id}>
+    return (<div key={folder.id} onDrop={(e) => handleFolderDrop(folder)} onDragOver={(e) => e.preventDefault()}>
       {folder.name}
       {imagesByFolder[folder.id] && imagesByFolder[folder.id].map((image) => {
         return (
           <div 
             className='sidebar-item' 
             key={image.id} 
-            onClick={() => handleSidebarImageClick(image)}>
+            onClick={() => handleSidebarImageClick(image)}
+            draggable={true}
+            onDragStart={() => setDraggingImageId(image.id)}>
             {image.name}
           </div>
         )}
@@ -118,6 +142,7 @@ function App() {
       <div className='sidebar'>
         <div><UploadButton onChange={handeFileSelected} /></div>
         {sidebarItems}
+        <button onClick={handleCreateFolder}>Create Folder</button>
       </div>
       <div className='preview'>
         <div>
