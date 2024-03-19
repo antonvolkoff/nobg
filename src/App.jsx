@@ -5,7 +5,7 @@ import UploadButton from './components/UploadButton'
 import loadImage, { LoadImageResult } from "blueimp-load-image"
 
 function App() {
-  const [result, setResult] = useState(null);
+  const [state, setState] = useState({ current: { original: null, result: null } })
 
   const uploadImageToServer = (file) => {
     loadImage(file, {
@@ -36,7 +36,9 @@ function App() {
 
         const result = await response.json();
         const base64Result = BASE64_IMAGE_HEADER + result.result_b64;
-        setResult(base64Result);
+        setState((state) => {
+          return { ...state, current: {original: imageBase64, result: base64Result} };
+        });
       })
 
       .catch((error) => {
@@ -53,9 +55,24 @@ function App() {
   }
 
   return (
-    <div className='uploader'>
-      <div><UploadButton onChange={handeFileSelected} /></div>
-      <div>{result && (<img src={result} />)}</div>
+    <div className='app'>
+      <div className='sidebar'>
+        <div><UploadButton onChange={handeFileSelected} /></div>
+      </div>
+      <div className='preview'>
+        <div>
+          <div>Original</div>
+          <div className='preview-item'>
+            {state.current.original && (<img src={state.current.original} />)}
+          </div>
+        </div>
+        <div>
+          <div>Processed</div>
+          <div className='preview-item'>
+            {state.current.result && (<img src={state.current.result} />)}
+          </div>
+        </div>
+      </div>
     </div>
   )
 }
