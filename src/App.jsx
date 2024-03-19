@@ -30,7 +30,7 @@ const defaultState = {
   images: [],
   folders: [defaultFolder],
   defaultFolderId: defaultFolder.id,
-  current: null,
+  currentId: null,
 };
 
 ///////
@@ -65,7 +65,7 @@ function App() {
         const result = await response.json();
         const base64Result = BASE64_IMAGE_HEADER + result.result_b64;
         setState((state) => {
-          const current = makeImage({
+          const newImage = makeImage({
             name: file.name,
             original: imageBase64,
             result: base64Result,
@@ -73,8 +73,8 @@ function App() {
           });
           return {
             ...state,
-            current: current,
-            images: [ ...state.images, current],
+            currentId: newImage.id,
+            images: [ ...state.images, newImage],
           };
         });
       })
@@ -92,11 +92,8 @@ function App() {
   }
 
   const handleSidebarImageClick = ({ id }) => {
-    const image = state.images.find((image) => image.id == id);
-    if (!image) return;
-
-    setState((state) => ({ ...state, current: image }));
-  }
+    setState((state) => ({ ...state, currentId: id }));
+  };
 
   const handleCreateFolder = (e) => {
     setState((state) => {
@@ -164,7 +161,7 @@ function App() {
           })}
         </div>
       </div>
-      <Preview { ...state.current } />
+      <Preview { ...state.images.find((image) => (image.id == state.currentId)) } />
     </div>
   )
 }
