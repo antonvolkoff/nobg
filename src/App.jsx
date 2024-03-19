@@ -4,8 +4,13 @@ import { API_URL, API_KEY, BASE64_IMAGE_HEADER } from './constants'
 import UploadButton from './components/UploadButton'
 import loadImage, { LoadImageResult } from "blueimp-load-image"
 
+const defaultState = {
+  images: [],
+  current: { original: null, result: null }
+}
+
 function App() {
-  const [state, setState] = useState({ current: { original: null, result: null } })
+  const [state, setState] = useState(defaultState);
 
   const uploadImageToServer = (file) => {
     loadImage(file, {
@@ -37,7 +42,17 @@ function App() {
         const result = await response.json();
         const base64Result = BASE64_IMAGE_HEADER + result.result_b64;
         setState((state) => {
-          return { ...state, current: {original: imageBase64, result: base64Result} };
+          const current = {
+            name: file.name,
+            original: imageBase64, 
+            result: base64Result
+          }
+          ;
+          return { 
+            ...state, 
+            current: current,
+            images: [ ...state.images, current],
+          };
         });
       })
 
@@ -54,10 +69,26 @@ function App() {
     }
   }
 
+  const handleSidebarImageClick = (name) => {
+    const image = state.images.find((image) => image.name == name);
+    if (!image) return;
+
+    setState((state) => ({ ...state, current: image }));
+  }
+
+  const sidebarItems = state.images.map((image) => {
+    return (
+      <div className='sidebar-item' key={image.name} onClick={() => handleSidebarImageClick(image.name)}>
+        {image.name}
+      </div>
+    )}
+  );
+
   return (
     <div className='app'>
       <div className='sidebar'>
         <div><UploadButton onChange={handeFileSelected} /></div>
+        {sidebarItems}
       </div>
       <div className='preview'>
         <div>
