@@ -1,15 +1,15 @@
-import { useState } from 'react'
-import useLocalStorageState from './hooks/localStorage';
-import './App.css'
-import { API_URL, API_KEY, BASE64_IMAGE_HEADER } from './constants'
+import "./App.css";
+import { API_URL, API_KEY, BASE64_IMAGE_HEADER } from "./constants";
 
-import loadImage, { LoadImageResult } from "blueimp-load-image"
-import { v4 as uuidv4 } from 'uuid'
+import { useState } from "react";
+import useLocalStorageState from "./hooks/localStorage";
+import loadImage from "blueimp-load-image";
+import { v4 as uuidv4 } from "uuid";
 
-import UploadButton from './components/UploadButton';
-import Folder from './components/Folder';
-import File from './components/File';
-import Preview from './components/Preview';
+import UploadButton from "./components/UploadButton";
+import Folder from "./components/Folder";
+import File from "./components/File";
+import Preview from "./components/Preview";
 
 /////
 
@@ -40,11 +40,7 @@ function App() {
   const [draggingImageId, setDraggingImageId] = useState(null);
 
   const uploadImageToServer = (file) => {
-    loadImage(file, {
-      maxWidth: 400,
-      maxHeight: 400,
-      canvas: true,
-    })
+    loadImage(file, {maxWidth: 400, maxHeight: 400, canvas: true})
       .then(async (imageData) => {
         const image = imageData.image;
         const imageBase64 = image.toDataURL("image/png");
@@ -82,7 +78,6 @@ function App() {
           };
         });
       })
-
       .catch((error) => {
         console.error(error);
       });
