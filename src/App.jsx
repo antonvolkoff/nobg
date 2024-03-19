@@ -11,7 +11,8 @@ import Folder from "./components/Folder";
 import File from "./components/File";
 import Preview from "./components/Preview";
 
-/////
+////////////////////////////////////////////////////////////////////////////////
+// State Management
 
 const makeFolder = (name) => ({ id: uuidv4(), name });
 
@@ -33,7 +34,8 @@ const defaultState = {
   currentId: null,
 };
 
-///////
+////////////////////////////////////////////////////////////////////////////////
+// UI
 
 function App() {
   const [state, setState] = useLocalStorageState('state', defaultState);
@@ -95,9 +97,12 @@ function App() {
     setState((state) => ({ ...state, currentId: id }));
   };
 
-  const handleCreateFolder = (e) => {
+  const handleCreateFolder = () => {
+    const name = prompt("Folder name", "New Folder");
+    if (!name) return;
+
     setState((state) => {
-      return ({ ...state, folders: [...state.folders, makeFolder("New Folder")] });
+      return ({ ...state, folders: [...state.folders, makeFolder(name)] });
     });
   };
 
