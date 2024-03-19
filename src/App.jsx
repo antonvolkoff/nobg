@@ -124,6 +124,16 @@ function App() {
     });
   };
 
+  const handleFolderDelete = ({ id }) => {
+    setState((state) => {
+      return {
+        ...state,
+        images: state.images.filter((image) => (image.folderId != id)),
+        folders: state.folders.filter((folder) => (folder.id != id)),
+      };
+    });
+  };
+
   return (
     <div className='app'>
       <div className='sidebar'>
@@ -150,7 +160,9 @@ function App() {
                 key={folder.id}
                 name={folder.name}
                 onDrop={(e) => handleFolderDrop(folder)}
-                onDragOver={(e) => e.preventDefault()}>
+                onDragOver={(e) => e.preventDefault()}
+                deletable={folder.id !== state.defaultFolderId}
+                onDelete={() => handleFolderDelete(folder)}>
                 {images}
               </Folder>
             );
