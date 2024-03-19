@@ -9,6 +9,7 @@ import { v4 as uuidv4 } from 'uuid'
 import UploadButton from './components/UploadButton';
 import Folder from './components/Folder';
 import File from './components/File';
+import Preview from './components/Preview';
 
 /////
 
@@ -157,7 +158,8 @@ function App() {
           {sidebarItems}
         </div>
       </div>
-      <div className='preview'>
+      <Preview { ...state.current } />
+      {/* <div className='preview'>
         <div>
           <div>Original</div>
           <div className='preview-item'>
@@ -170,7 +172,7 @@ function App() {
             {state.current && (<img src={state.current.result} />)}
           </div>
         </div>
-      </div>
+      </div> */}
     </div>
   )
 }
